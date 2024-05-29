@@ -8,7 +8,7 @@ export const authGuard = createMiddleware(async (c, next) => {
 
     const user = await getUserBySessionId(Number(session));
     if (!user) {
-        deleteCookie(c, '__session', { path: '/' });
+        deleteCookie(c, '__session');
         return c.json({ success: false, message: 'Unauthorized' }, 401);
     }
 

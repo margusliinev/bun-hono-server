@@ -1,6 +1,6 @@
 import { createUser, getUserByEmail, getUserByEmailWithPassword, getUserByUsername } from '@/models/user';
 import { registerSchema, loginSchema } from '@/auth/auth.schema';
-import { setSignedCookie } from 'hono/cookie';
+import { deleteCookie, setSignedCookie } from 'hono/cookie';
 import { createSession } from '@/models/session';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
@@ -78,3 +78,8 @@ auth.post(
         return c.json({ success: true, message: 'User login successful' });
     }
 );
+
+auth.post('/logout', async (c) => {
+    deleteCookie(c, '__session');
+    return c.json({ success: true, message: 'User logout successful' });
+});
