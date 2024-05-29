@@ -3,9 +3,7 @@ import { createConnection } from 'mysql2';
 import mockUsers from './users.json';
 import * as schema from './schema';
 
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not defined');
-
-const connection = createConnection(process.env.DATABASE_URL);
+const connection = createConnection(process.env.DATABASE_URL!);
 const db = drizzle(connection, { mode: 'default', schema: schema });
 
 async function seed() {
@@ -35,4 +33,4 @@ seed()
     .catch((error) => {
         console.error('Error during seeding:', error);
     })
-    .finally(() => process.exit());
+    .finally(() => process.exit(1));

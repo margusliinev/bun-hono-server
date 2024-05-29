@@ -39,6 +39,15 @@ export async function getUserByEmailWithPassword(email: User['email']) {
     }
 }
 
+export async function getAllUsers() {
+    try {
+        return await db.query.usersTable.findMany({ columns: { password: false } });
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 export async function createUser(user: NewUser) {
     try {
         const [newUser] = await db.insert(usersTable).values(user);
