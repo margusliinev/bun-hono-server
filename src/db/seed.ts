@@ -33,4 +33,4 @@ seed()
     .catch((error) => {
         console.error('Error during seeding:', error);
     })
-    .finally(() => process.exit(1));
+    .finally(() => process.exit(0));

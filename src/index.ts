@@ -11,12 +11,12 @@ declare module 'hono' {
     }
 }
 
-const app = new Hono();
+export const app = new Hono({ strict: true });
 app.use(logger());
 
-app.route('/auth', auth);
+app.route('/api/auth', auth);
 app.use(authGuard);
-app.route('/users', users);
+app.route('/api/users', users);
 
 app.notFound(async (c) => c.json({ success: false, message: 'Not Found' }, 404));
 app.onError(async (err, c) => c.json({ success: false, message: err.message }, 500));
