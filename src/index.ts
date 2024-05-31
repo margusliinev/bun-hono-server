@@ -14,6 +14,8 @@ declare module 'hono' {
 export const app = new Hono({ strict: true });
 app.use(logger());
 
+app.get('/', async (c) => c.json({ success: true, message: 'Healthcheck OK' }));
+
 app.route('/api/auth', auth);
 app.use(authGuard);
 app.route('/api/users', users);
