@@ -3,9 +3,9 @@
     "version": "0.0.1",
     "license": "MIT",
     "scripts": {
-        "dev": "bun run --hot src/index.ts",
-        "build": "bun build ./src/index.ts --outdir ./dist --target bun",
-        "start": "bun run ./dist/index.js",
+        "dev": "bun run --hot src/server.ts",
+        "build": "bun build --compile --minify --sourcemap ./src/server.ts --outfile ./dist/server",
+        "start": "./dist/server",
         "test": "bun test ./test/**/*.test.ts",
         "generate": "drizzle-kit generate",
         "migrate": "drizzle-kit migrate",
