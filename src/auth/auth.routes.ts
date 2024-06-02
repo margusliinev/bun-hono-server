@@ -1,6 +1,7 @@
 import { createUser, getUserByEmail, getUserByEmailWithPassword, getUserByUsername } from '@/models/user';
 import { registerSchema, loginSchema } from '@/auth/auth.schema';
 import { deleteCookie, setSignedCookie } from 'hono/cookie';
+import { HTTPException } from 'hono/http-exception';
 import { createSession } from '@/models/session';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
@@ -20,19 +21,19 @@ auth.post(
         const body = c.req.valid('json');
 
         const existingUsername = await getUserByUsername(body.username);
-        if (existingUsername) return c.json({ success: false, message: 'Username already exists' }, 400);
+        if (existingUsername) throw new HTTPException(400, { message: 'Username already exists' });
 
         const existingEmail = await getUserByEmail(body.email);
-        if (existingEmail) return c.json({ success: false, message: 'Email already exists' }, 400);
+        if (existingEmail) throw new HTTPException(400, { message: 'Email already exists' });
 
         const hashedPassword = await Bun.password.hash(body.password, { algorithm: 'bcrypt' });
-        if (!hashedPassword) return c.json({ success: false, message: 'Failed to hash password' }, 500);
+        if (!hashedPassword) throw new HTTPException(500, { message: 'Failed to hash password' });
 
         const newUser = await createUser({ ...body, password: hashedPassword });
-        if (!newUser) return c.json({ success: false, message: 'Failed to create user' }, 500);
+        if (!newUser) throw new HTTPException(500, { message: 'Failed to create user' });
 
         const session = await createSession(newUser.id);
-        if (!session) return c.json({ success: false, message: 'Failed to create session' }, 500);
+        if (!session) throw new HTTPException(500, { message: 'Failed to create session' });
 
         await setSignedCookie(c, '__session', String(session.id), process.env.SESSION_SECRET!, {
             path: '/',
@@ -42,7 +43,7 @@ auth.post(
             sameSite: 'lax'
         });
 
-        return c.json({ success: true, message: 'User register successful' });
+        return c.json({ success: true, message: 'User register successful' }, 201);
     }
 );
 
@@ -59,13 +60,13 @@ auth.post(
         const body = c.req.valid('json');
 
         const user = await getUserByEmailWithPassword(body.email);
-        if (!user) return c.json({ success: false, message: 'Invalid email or password' }, 400);
+        if (!user) throw new HTTPException(400, { message: 'Invalid email or password' });
 
         const validPassword = await Bun.password.verify(body.password, user.password);
-        if (!validPassword) return c.json({ success: false, message: 'Invalid email or password' }, 400);
+        if (!validPassword) throw new HTTPException(400, { message: 'Invalid email or password' });
 
         const session = await createSession(user.id);
-        if (!session) return c.json({ success: false, message: 'Failed to create session' }, 500);
+        if (!session) throw new HTTPException(500, { message: 'Failed to create session' });
 
         await setSignedCookie(c, '__session', String(session.id), process.env.SESSION_SECRET!, {
             path: '/',
@@ -75,11 +76,11 @@ auth.post(
             sameSite: 'lax'
         });
 
-        return c.json({ success: true, message: 'User login successful' });
+        return c.json({ success: true, message: 'User login successful' }, 201);
     }
 );
 
 auth.post('/logout', async (c) => {
-    deleteCookie(c, '__session');
-    return c.json({ success: true, message: 'User logout successful' });
+    deleteCookie(c, '__session', { path: '/' });
+    return c.json({ success: true, message: 'User logout successful' }, 201);
 });

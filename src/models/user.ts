@@ -52,7 +52,6 @@ export async function createUser(user: NewUser) {
     try {
         const [newUser] = await db.insert(usersTable).values(user);
         const createdUser = await getUserById(newUser.insertId);
-
         return createdUser;
     } catch (error) {
         console.error(error);

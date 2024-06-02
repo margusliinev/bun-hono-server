@@ -1,3 +1,4 @@
+import { HTTPException } from 'hono/http-exception';
 import { authGuard } from '@/auth/auth.guard';
 import { auth } from '@/auth/auth.routes';
 import { users } from '@/users/users.routes';
@@ -14,13 +15,18 @@ declare module 'hono' {
 export const app = new Hono({ strict: true });
 app.use(logger());
 
-app.get('/', async (c) => c.json({ success: true, message: 'Healthcheck OK' }));
+app.get('/', async (c) => c.json({ success: true, message: 'OK' }));
 
 app.route('/api/auth', auth);
 app.use(authGuard);
 app.route('/api/users', users);
 
 app.notFound(async (c) => c.json({ success: false, message: 'Not Found' }, 404));
-app.onError(async (err, c) => c.json({ success: false, message: err.message }, 500));
+app.onError(async (err, c) => {
+    if (err instanceof HTTPException) {
+        return c.json({ success: false, message: err.message }, err.status);
+    }
+    return c.json({ success: false, message: err.message }, 500);
+});
 
 export default { fetch: app.fetch, port: process.env.PORT || 3000 };
