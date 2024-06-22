@@ -50,9 +50,11 @@ export async function getAllUsers() {
 
 export async function createUser(user: NewUser) {
     try {
-        const [newUser] = await db.insert(usersTable).values(user);
-        const createdUser = await getUserById(newUser.insertId);
-        return createdUser;
+        return await db.transaction(async (tx) => {
+            const [newUser] = await tx.insert(usersTable).values(user);
+            const createdUser = await tx.query.usersTable.findFirst({ where: eq(usersTable.id, newUser.insertId), columns: { password: false } });
+            return createdUser;
+        });
     } catch (error) {
         console.error(error);
         return null;

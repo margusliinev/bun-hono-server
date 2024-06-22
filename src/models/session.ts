@@ -7,9 +7,11 @@ const SESSION_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
 
 export async function createSession(userId: Session['user_id']) {
     try {
-        const [newSession] = await db.insert(sessionsTable).values({ user_id: userId, expires_at: new Date(Date.now() + SESSION_EXPIRATION_TIME) });
-        const createdSession = await db.query.sessionsTable.findFirst({ where: eq(sessionsTable.id, newSession.insertId) });
-        return createdSession;
+        return await db.transaction(async (tx) => {
+            const [newSession] = await tx.insert(sessionsTable).values({ user_id: userId, expires_at: new Date(Date.now() + SESSION_EXPIRATION_TIME) });
+            const createdSession = await tx.query.sessionsTable.findFirst({ where: eq(sessionsTable.id, newSession.insertId) });
+            return createdSession;
+        });
     } catch (error) {
         console.error(error);
         return null;

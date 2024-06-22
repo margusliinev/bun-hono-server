@@ -17,9 +17,7 @@ auth.post('/register', validate(registerSchema), async (c) => {
     const existingEmail = await getUserByEmail(body.email);
     if (existingEmail) throw new HTTPException(400, { message: 'Email already exists' });
 
-    const hashedPassword = await Bun.password.hash(body.password, {
-        algorithm: 'bcrypt'
-    });
+    const hashedPassword = await Bun.password.hash(body.password, { algorithm: 'bcrypt' });
     if (!hashedPassword) throw new HTTPException(500, { message: 'Failed to hash password' });
 
     const newUser = await createUser({ ...body, password: hashedPassword });
@@ -36,7 +34,7 @@ auth.post('/register', validate(registerSchema), async (c) => {
         sameSite: 'lax'
     });
 
-    return c.json({ success: true, message: 'User register successful' }, 201);
+    return c.json({ success: true, message: 'Register successful' }, 201);
 });
 
 auth.post('/login', validate(loginSchema), async (c) => {
@@ -59,10 +57,10 @@ auth.post('/login', validate(loginSchema), async (c) => {
         sameSite: 'lax'
     });
 
-    return c.json({ success: true, message: 'User login successful' }, 201);
+    return c.json({ success: true, message: 'Login successful' }, 201);
 });
 
 auth.post('/logout', async (c) => {
     deleteCookie(c, '__session', { path: '/' });
-    return c.json({ success: true, message: 'User logout successful' }, 201);
+    return c.json({ success: true, message: 'Logout successful' }, 201);
 });
