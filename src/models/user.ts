@@ -1,7 +1,7 @@
-import type { User, NewUser } from '@/db/schema';
+import { db } from '@/db';
+import type { NewUser, User } from '@/db/schema';
 import { usersTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { db } from '@/db';
 
 export async function getUserById(id: User['id']) {
     try {

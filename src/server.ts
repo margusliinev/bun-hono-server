@@ -1,9 +1,7 @@
-import { HTTPException } from 'hono/http-exception';
-import { authGuard } from '@/auth/auth.guard';
 import { auth } from '@/auth/auth.routes';
 import { users } from '@/users/users.routes';
-import { logger } from 'hono/logger';
 import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 import { User } from './db/schema';
 
 declare module 'hono' {
@@ -13,12 +11,9 @@ declare module 'hono' {
 }
 
 export const app = new Hono({ strict: true });
-app.use(logger());
-
 app.get('/', async (c) => c.json({ success: true, message: 'OK' }));
 
 app.route('/api/auth', auth);
-app.use(authGuard);
 app.route('/api/users', users);
 
 app.notFound(async (c) => c.json({ success: false, message: 'Not Found' }, 404));

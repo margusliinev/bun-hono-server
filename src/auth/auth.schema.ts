@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const registerSchema = z.object({
     username: z
-        .string({ invalid_type_error: 'Username is invalid' })
+        .string({ invalid_type_error: 'Username is invalid', required_error: 'Username is required' })
         .min(3, { message: 'Username must be between 3 and 39 characters' })
         .max(39, { message: 'Username must be between 3 and 39 characters' })
         .regex(/^[^-].*[^-]$/, { message: 'Username cannot start or end with a hyphen' })

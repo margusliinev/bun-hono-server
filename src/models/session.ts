@@ -1,7 +1,7 @@
+import { db } from '@/db';
 import type { Session } from '@/db/schema';
 import { sessionsTable } from '@/db/schema';
 import { and, eq, gt } from 'drizzle-orm';
-import { db } from '@/db';
 
 const SESSION_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
 

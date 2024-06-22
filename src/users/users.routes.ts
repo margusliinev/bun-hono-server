@@ -1,8 +1,10 @@
+import { authGuard } from '@/auth/auth.guard';
 import { getAllUsers, getUserById } from '@/models/user';
-import { HTTPException } from 'hono/http-exception';
 import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 
 export const users = new Hono();
+users.use(authGuard);
 
 users.get('/', async (c) => {
     const users = await getAllUsers();
