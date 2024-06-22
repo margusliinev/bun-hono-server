@@ -4,8 +4,10 @@ import UsersRoutes from '@/domains/users/users.routes';
 import { Hono } from 'hono';
 import { showRoutes } from 'hono/dev';
 import { HTTPException } from 'hono/http-exception';
+import { logger } from 'hono/logger';
 
 export const app = new Hono({ strict: true });
+app.use(logger());
 
 app.route('/api/health', HealthRoutes);
 app.route('/api/auth', AuthRoutes);
@@ -13,7 +15,6 @@ app.route('/api/users', UsersRoutes);
 
 app.notFound(async (c) => c.json({ success: false, message: 'Not Found' }, 404));
 app.onError(async (err, c) => {
-    console.error(err);
     if (err instanceof HTTPException) {
         return c.json({ success: false, message: err.message }, err.status);
     } else {

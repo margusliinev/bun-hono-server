@@ -62,7 +62,7 @@ app.post('/login', validate(loginSchema), async (c) => {
 
 app.post('/logout', async (c) => {
     deleteCookie(c, '__session', { path: '/' });
-    return c.json({ success: true, message: 'Logout successful' }, 201);
+    return c.json({ success: true, message: 'Logout successful' }, 204);
 });
 
 export default app;
