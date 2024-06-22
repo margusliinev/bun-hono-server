@@ -1,3 +1,4 @@
+import { authenticate } from './authenticate';
 import { validate } from './validation';
 
-export { validate };
+export { authenticate, validate };

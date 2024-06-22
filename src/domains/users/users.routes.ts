@@ -1,19 +1,20 @@
-import { authGuard } from '@/auth/auth.guard';
+import { authenticate } from '@/middleware';
 import { getAllUsers, getUserById } from '@/models/user';
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 
-export const users = new Hono();
-users.use(authGuard);
+const app = new Hono({ strict: true });
 
-users.get('/', async (c) => {
+app.use(authenticate);
+
+app.get('/', async (c) => {
     const users = await getAllUsers();
     if (!users) throw new HTTPException(404, { message: 'Users not found' });
 
     return c.json({ success: true, data: users });
 });
 
-users.get('/me', async (c) => {
+app.get('/me', async (c) => {
     const userID = c.get('user');
 
     const user = await getUserById(userID);
@@ -21,3 +22,5 @@ users.get('/me', async (c) => {
 
     return c.json({ success: true, data: user });
 });
+
+export default app;

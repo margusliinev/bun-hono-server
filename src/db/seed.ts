@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/mysql2';
 import { createConnection } from 'mysql2';
-import mockUsers from './users.json';
 import * as schema from './schema';
+import mockUsers from './users.json';
 
 const connection = createConnection(process.env.DATABASE_URL!);
 const db = drizzle(connection, { mode: 'default', schema: schema });

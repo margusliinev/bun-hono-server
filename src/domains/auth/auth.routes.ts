@@ -1,14 +1,14 @@
-import { loginSchema, registerSchema } from '@/auth/auth.schema';
 import { validate } from '@/middleware';
 import { createSession } from '@/models/session';
 import { createUser, getUserByEmail, getUserByEmailWithPassword, getUserByUsername } from '@/models/user';
 import { Hono } from 'hono';
 import { deleteCookie, setSignedCookie } from 'hono/cookie';
 import { HTTPException } from 'hono/http-exception';
+import { loginSchema, registerSchema } from './auth.schema';
 
-export const auth = new Hono({ strict: true });
+const app = new Hono({ strict: true });
 
-auth.post('/register', validate(registerSchema), async (c) => {
+app.post('/register', validate(registerSchema), async (c) => {
     const body = c.req.valid('json');
 
     const existingUsername = await getUserByUsername(body.username);
@@ -37,7 +37,7 @@ auth.post('/register', validate(registerSchema), async (c) => {
     return c.json({ success: true, message: 'Register successful' }, 201);
 });
 
-auth.post('/login', validate(loginSchema), async (c) => {
+app.post('/login', validate(loginSchema), async (c) => {
     const body = c.req.valid('json');
 
     const user = await getUserByEmailWithPassword(body.email);
@@ -60,7 +60,9 @@ auth.post('/login', validate(loginSchema), async (c) => {
     return c.json({ success: true, message: 'Login successful' }, 201);
 });
 
-auth.post('/logout', async (c) => {
+app.post('/logout', async (c) => {
     deleteCookie(c, '__session', { path: '/' });
     return c.json({ success: true, message: 'Logout successful' }, 201);
 });
+
+export default app;
