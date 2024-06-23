@@ -6,7 +6,7 @@ import { deleteCookie, setSignedCookie } from 'hono/cookie';
 import { HTTPException } from 'hono/http-exception';
 import { loginSchema, registerSchema } from './auth.schema';
 
-const app = new Hono({ strict: true });
+const app = new Hono();
 
 app.post('/register', validate(registerSchema), async (c) => {
     const body = c.req.valid('json');

@@ -3,7 +3,7 @@ import { getAllUsers, getUserById } from '@/models/user';
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 
-const app = new Hono({ strict: true });
+const app = new Hono();
 
 app.use(authenticate);
 

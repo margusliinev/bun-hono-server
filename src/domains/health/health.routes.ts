@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 
-const app = new Hono({ strict: true });
+const app = new Hono();
 
 app.get('/ok', async (c) => c.json({ success: true, message: 'OK' }));
 
