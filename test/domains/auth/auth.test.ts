@@ -92,36 +92,46 @@ describe('User Registration', () => {
             expect(res.status).toBe(400);
             expect(body).toEqual({ success: false, message: 'Username already exists' });
         });
-        describe('Email Validation', () => {
-            test('Email is required', async () => {
-                const req = registerUser({ username: 'johndoe', password: 'johndoe123' });
+    });
+    describe('Email Validation', () => {
+        test('Should fail when email is not provided', async () => {
+            const req = registerUser({ username: 'johndoe', password: 'johndoe123' });
 
-                const res = await app.fetch(req);
-                const body = await res.json();
+            const res = await app.fetch(req);
+            const body = await res.json();
 
-                expect(res.status).toBe(400);
-                expect(body).toEqual({ success: false, message: 'Email is required' });
-            });
-            test('Email already exists', async () => {
-                const req = registerUser({ username: 'johndoe1', email: 'johndoe@gmail.com', password: 'johndoe123' });
-
-                const res = await app.fetch(req);
-                const body = await res.json();
-
-                expect(res.status).toBe(400);
-                expect(body).toEqual({ success: false, message: 'Email already exists' });
-            });
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Email is required' });
         });
-        describe('Password Validation', () => {
-            test('Password is required', async () => {
-                const req = registerUser({ username: 'johndoe', email: 'johndoe@gmail.com' });
 
-                const res = await app.fetch(req);
-                const body = await res.json();
+        test('Should fail when email is not a string', async () => {
+            const req = registerUser({ username: 'johndoe', email: 5, password: 'johndoe123' });
 
-                expect(res.status).toBe(400);
-                expect(body).toEqual({ success: false, message: 'Password is required' });
-            });
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Email is invalid' });
+        });
+
+        test('Should fail when email is invalid', async () => {
+            const req = registerUser({ username: 'johndoe', email: 'johndoegmail.com', password: 'johndoe123' });
+
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Email is invalid' });
+        });
+
+        test('Should fail when email is already in use', async () => {
+            const req = registerUser({ username: 'johndoe1', email: 'johndoe@gmail.com', password: 'johndoe123' });
+
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Email already exists' });
         });
     });
 });
