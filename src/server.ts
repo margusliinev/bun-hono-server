@@ -4,10 +4,10 @@ import UsersRoutes from '@/domains/users/users.routes';
 import { Hono } from 'hono';
 import { showRoutes } from 'hono/dev';
 import { HTTPException } from 'hono/http-exception';
-import { logger } from 'hono/logger';
+import { trimTrailingSlash } from 'hono/trailing-slash';
 
 export const app = new Hono({ strict: true });
-app.use(logger());
+app.use(trimTrailingSlash());
 
 app.route('/api/health', HealthRoutes);
 app.route('/api/auth', AuthRoutes);
