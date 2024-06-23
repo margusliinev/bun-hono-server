@@ -134,4 +134,55 @@ describe('User Registration', () => {
             expect(body).toEqual({ success: false, message: 'Email already exists' });
         });
     });
+    describe('Password Validation', () => {
+        test('Should fail when password is not provided', async () => {
+            const req = registerUser({ username: 'johndoe', email: 'johndoe@gmail.com' });
+
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Password is required' });
+        });
+
+        test('Should fail when password is not a string', async () => {
+            const req = registerUser({ username: 'johndoe', email: 'johndoe@gmail.com', password: 12345678 });
+
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Password is invalid' });
+        });
+
+        test('Should fail when password is less than 8 characters', async () => {
+            const req = registerUser({ username: 'johndoe', email: 'johndoe@gmail.com', password: 'johndoe' });
+
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Password must be at least 8 characters' });
+        });
+
+        test('Should fail when password does not contain a number', async () => {
+            const req = registerUser({ username: 'johndoe', email: 'johndoe@gmail.com', password: 'megajohndoe' });
+
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Password must contain at least one number' });
+        });
+
+        test('Should fail when password does not contain a letter', async () => {
+            const req = registerUser({ username: 'johndoe', email: 'johndoe@gmail.com', password: '12345678' });
+
+            const res = await app.fetch(req);
+            const body = await res.json();
+
+            expect(res.status).toBe(400);
+            expect(body).toEqual({ success: false, message: 'Password must contain at least one letter' });
+        });
+    });
 });
