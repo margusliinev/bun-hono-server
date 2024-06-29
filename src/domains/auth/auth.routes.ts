@@ -61,5 +61,4 @@ const app = new Hono()
         deleteCookie(c, '__session', { path: '/' });
         return c.json({ success: true, message: 'Logout successful' }, 204);
     });
-
 export default app;
