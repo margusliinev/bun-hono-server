@@ -1,15 +1,17 @@
-import AuthRoutes from '@/domains/auth/auth.routes';
-import HealthRoutes from '@/domains/health/health.routes';
-import UsersRoutes from '@/domains/users/users.routes';
-import { Hono } from 'hono';
-import { showRoutes } from 'hono/dev';
+import HealthRoutes from './domains/health/health.routes';
+import UsersRoutes from './domains/users/users.routes';
+import AuthRoutes from './domains/auth/auth.routes';
 import { HTTPException } from 'hono/http-exception';
+import { serveStatic } from 'hono/bun';
+import { showRoutes } from 'hono/dev';
+import { Hono } from 'hono';
 
 export const app = new Hono({ strict: false });
 
-app.route('/api/health', HealthRoutes);
-app.route('/api/auth', AuthRoutes);
-app.route('/api/users', UsersRoutes);
+const apiRoutes = app.basePath('/api').route('/health', HealthRoutes).route('/users', UsersRoutes).route('/auth', AuthRoutes);
+
+app.get('*', serveStatic({ root: './client/dist' }));
+app.get('*', serveStatic({ path: './client/dist/index.html' }));
 
 app.notFound(async (c) => c.json({ success: false, message: 'Not Found' }, 404));
 app.onError(async (err, c) => {
@@ -22,4 +24,5 @@ app.onError(async (err, c) => {
 
 showRoutes(app, { colorize: true });
 
+export type APIRoutes = typeof apiRoutes;
 export default { fetch: app.fetch, port: process.env.PORT || 3000 };
