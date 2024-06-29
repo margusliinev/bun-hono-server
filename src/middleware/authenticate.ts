@@ -1,5 +1,5 @@
-import { getUserBySessionId } from '@/models/session';
 import { deleteCookie, getSignedCookie } from 'hono/cookie';
+import { getUserBySessionId } from '../models/session';
 import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
 
