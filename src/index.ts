@@ -4,9 +4,11 @@ import AuthRoutes from './domains/auth/auth.routes';
 import { HTTPException } from 'hono/http-exception';
 import { serveStatic } from 'hono/bun';
 import { showRoutes } from 'hono/dev';
+import { logger } from 'hono/logger';
 import { Hono } from 'hono';
 
 export const app = new Hono({ strict: false });
+app.use(logger());
 
 const apiRoutes = app.basePath('/api').route('/health', HealthRoutes).route('/users', UsersRoutes).route('/auth', AuthRoutes);
 
