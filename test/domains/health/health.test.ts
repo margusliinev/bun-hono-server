@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import app from '../../../src/server';
+import app from '../../../src/index';
 
 describe('Health Domain', async () => {
     describe('Perform Healthcheck', () => {

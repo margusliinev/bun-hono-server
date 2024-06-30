@@ -8,10 +8,9 @@ import { Hono } from 'hono';
 
 export const app = new Hono({ strict: false });
 
-const apiRoutes = app.basePath('/api').route('/health', HealthRoutes).route('/users', UsersRoutes).route('/auth', AuthRoutes);
+app.use('*', serveStatic({ root: './client/dist' }));
 
-app.get('*', serveStatic({ root: './client/dist' }));
-app.get('*', serveStatic({ path: './client/dist/index.html' }));
+const apiRoutes = app.basePath('/api').route('/health', HealthRoutes).route('/users', UsersRoutes).route('/auth', AuthRoutes);
 
 app.notFound(async (c) => c.json({ success: false, message: 'Not Found' }, 404));
 app.onError(async (err, c) => {
