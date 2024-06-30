@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeAll } from 'bun:test';
-import app from '../../../src/server';
+import app from '../../../src/index';
 
 async function getSessionCookie() {
     const authResponse = await app.fetch(
@@ -43,7 +43,7 @@ describe('Users Domain', async () => {
             const body = await res.json();
 
             expect(res.status).toBe(401);
-            expect(body).toEqual({ success: false, message: 'Unauthenticated' });
+            expect(body).toEqual({ success: false, message: 'Unauthorized' });
         });
     });
 
@@ -75,7 +75,7 @@ describe('Users Domain', async () => {
             const body = await res.json();
 
             expect(res.status).toBe(401);
-            expect(body).toEqual({ success: false, message: 'Unauthenticated' });
+            expect(body).toEqual({ success: false, message: 'Unauthorized' });
         });
     });
 });

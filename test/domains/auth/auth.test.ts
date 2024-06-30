@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import app from '../../../src/server';
+import app from '../../../src/index';
 
 const registerUser = (body: object) => {
     return new Request('http://localhost/api/auth/register', {
