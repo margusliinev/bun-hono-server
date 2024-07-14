@@ -4,6 +4,7 @@
         "noUncheckedIndexedAccess": true,
         "noUnusedParameters": true,
         "resolveJsonModule": true,
+        "esModuleInterop": true,
         "isolatedModules": true,
         "noUnusedLocals": true,
         "skipLibCheck": true,

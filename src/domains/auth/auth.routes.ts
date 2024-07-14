@@ -25,10 +25,12 @@ const app = new Hono()
         const session = await createSession(newUser.id);
         if (!session) throw new HTTPException(500, { message: 'Failed to create session' });
 
+        console.log('SESSION', String(session.id));
+
         await setSignedCookie(c, '__session', String(session.id), process.env.SESSION_SECRET!, {
             path: '/',
             httpOnly: true,
-            secure: Bun.env.NODE_ENV === 'production',
+            secure: process.env.NODE_ENV === 'production',
             maxAge: 7 * 24 * 60 * 60,
             sameSite: 'lax'
         });
@@ -50,7 +52,7 @@ const app = new Hono()
         await setSignedCookie(c, '__session', String(session.id), process.env.SESSION_SECRET!, {
             path: '/',
             httpOnly: true,
-            secure: Bun.env.NODE_ENV === 'production',
+            secure: process.env.NODE_ENV === 'production',
             maxAge: 7 * 24 * 60 * 60,
             sameSite: 'lax'
         });
