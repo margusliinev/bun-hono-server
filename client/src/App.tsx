@@ -11,7 +11,6 @@ function App() {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             const res = await client.api.health.ok.$get();
             const data = await res.json();
             setMessage(data.message);
